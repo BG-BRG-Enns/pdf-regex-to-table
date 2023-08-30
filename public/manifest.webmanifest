@@ -3,7 +3,7 @@
     "short_name": "PDF extract to Table",
     "scope": "/pdf-regex-to-table/",
     "id": "pdf-regex-to-table",
-    "start_url": "/pdf-regex-to-table/index.html",
+    "start_url": "/pdf-regex-to-table/",
     "display": "fullscreen",
     "background_color": "#0000ff",
     "orientation": "portrait",
