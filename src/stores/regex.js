@@ -1,7 +1,7 @@
-import { reactive } from "vue";
+import { reactive } from 'vue'
 export const regex = reactive({
-  regex: "",
-  setRegex(regex) {
-    this.regex = regex;
-  },
-});
+  regex: '',
+  setRegex (regex) {
+    this.regex = regex
+  }
+})

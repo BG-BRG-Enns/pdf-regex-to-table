@@ -1,10 +1,10 @@
-import { reactive } from "vue";
+import { reactive } from 'vue'
 export const fileContent = reactive({
   text: {},
-  addFileContentText(page, text) {
-    this.text[page] = text;
+  addFileContentText (page, text) {
+    this.text[page] = text
   },
-  clearFileContentText() {
-    this.text = {};
-  },
-});
+  clearFileContentText () {
+    this.text = {}
+  }
+})

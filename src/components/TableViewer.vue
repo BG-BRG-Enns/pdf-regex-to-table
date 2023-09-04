@@ -1,39 +1,41 @@
 <script setup>
-import { fileContent } from "../stores/fileContent";
-import { regex } from "../stores/regex.js";
-import { ref } from "vue";
-import { utils, writeFileXLSX } from "xlsx";
+import { fileContent } from '../stores/fileContent'
+import { regex } from '../stores/regex.js'
+import { ref } from 'vue'
+import { utils, writeFileXLSX } from 'xlsx'
 
-const csv = ref([]);
-const filename = ref("extracted-data");
+const csv = ref([])
+const filename = ref('extracted-data')
 const exportXLSX = () => {
-  utils.table_to_book(document.getElementById("extracted-data"));
+  utils.table_to_book(document.getElementById('extracted-data'))
   writeFileXLSX(
-    utils.table_to_book(document.getElementById("extracted-data")),
-    `${filename.value}.xlsx`,
-  );
-};
+    utils.table_to_book(document.getElementById('extracted-data')),
+    `${filename.value}.xlsx`
+  )
+}
 const exportCSV = () => {
-  const rows = document.querySelectorAll("table tr");
+  const rows = document.querySelectorAll('table tr')
   rows.forEach((row, index) => {
-    const columns = row.querySelectorAll("td");
-    const line = [];
+    const columns = row.querySelectorAll('td')
+    const line = []
     columns.forEach((column, index2) => {
-      line.push(column.innerText);
-    });
-    csv.value.push('"' + line.join('","') + '"');
-  });
-  const csvContent = "data:text/csv;charset=utf-8," + csv.value.join("\n");
-  const encodedUri = encodeURI(csvContent);
-  const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
-  link.setAttribute("download", `${filename.value}.csv`);
-  document.body.appendChild(link); // Required for FF
-  link.click();
-};
+      line.push(column.innerText)
+    })
+    csv.value.push('"' + line.join('","') + '"')
+  })
+  const csvContent = 'data:text/csv;charset=utf-8,' + csv.value.join('\n')
+  const encodedUri = encodeURI(csvContent)
+  const link = document.createElement('a')
+  link.setAttribute('href', encodedUri)
+  link.setAttribute('download', `${filename.value}.csv`)
+  document.body.appendChild(link) // Required for FF
+  link.click()
+}
 </script>
 <template>
-  <p class="has-text-weight-bold">Extrahierte Daten</p>
+  <p class="has-text-weight-bold">
+    Extrahierte Daten
+  </p>
   <!-- Download Button -->
   <div class="columns">
     <div class="column is-narrow">
@@ -41,7 +43,10 @@ const exportCSV = () => {
         <div class="control">
           <!-- :href="'data:text/plain;charset=utf-8,' + encodeURIComponent(fileContent.text.join('\n'))"
                   :download="fileContent.name" -->
-          <a class="button is-success" @click="exportCSV"> Download CSV </a>
+          <a
+            class="button is-success"
+            @click="exportCSV"
+          > Download CSV </a>
         </div>
       </div>
     </div>
@@ -50,7 +55,10 @@ const exportCSV = () => {
         <div class="control">
           <!-- :href="'data:text/plain;charset=utf-8,' + encodeURIComponent(fileContent.text.join('\n'))"
                   :download="fileContent.name" -->
-          <a class="button is-success" @click="exportXLSX"> Download XLSX </a>
+          <a
+            class="button is-success"
+            @click="exportXLSX"
+          > Download XLSX </a>
         </div>
       </div>
     </div>
@@ -63,11 +71,11 @@ const exportCSV = () => {
           <div class="field">
             <p class="control">
               <input
+                v-model="filename"
                 class="input is-family-monospace"
                 type="text"
                 placeholder="Filename"
-                v-model="filename"
-              />
+              >
             </p>
           </div>
         </div>
@@ -76,15 +84,23 @@ const exportCSV = () => {
   </div>
   <div class="table-container">
     <table
-      class="table is-striped is-bordered is-hoverable"
       id="extracted-data"
+      class="table is-striped is-bordered is-hoverable"
     >
       <tbody>
         <template v-for="(line, index) in fileContent.text">
-          <tr v-if="line.match(regex.regex)">
+          <tr
+            v-if="line.match(regex.regex)"
+            :key="index"
+          >
             <td>{{ index }}</td>
             <template v-for="(match, index2) in line.match(regex.regex)">
-              <td v-if="index2 > 0">{{ match }}</td>
+              <td
+                v-if="index2 > 0"
+                :key="index2"
+              >
+                {{ match }}
+              </td>
             </template>
           </tr>
         </template>
