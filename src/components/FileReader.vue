@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-textarea-mustache -->
 <script setup>
 import { ref } from 'vue'
 import { fileContent } from '../stores/fileContent'
@@ -9,49 +10,104 @@ import('pdfjs-dist').then(async (pdfjs) => {
 })
 const fileURL = ref('')
 const fileURLPreview = ref('')
-const handleDrop = (ev) => {
+const supportsFileSystemAccessAPI = 'getAsFileSystemHandle' in DataTransferItem.prototype
+const supportsWebkitGetAsEntry = 'webkitGetAsEntry' in DataTransferItem.prototype
+
+const handleDrop = async (ev) => {
   ev.preventDefault()
+
   fileContent.clearFileContentText()
   if (ev.dataTransfer.items) {
-    // Use DataTransferItemList interface to access the file(s)
-    [...ev.dataTransfer.items].forEach((item, i) => {
-      // If dropped items aren't files, reject them
-      if (item.kind === 'file') {
-        const file = item.getAsFile()
-        fileURL.value = URL.createObjectURL(file)
-        fileURLPreview.value = fileURL.value + '#view=FitH'
-        // eslint-disable-next-line no-undef
-        const loadingTask = pdfjsLib.getDocument(fileURL.value)
-        loadingTask.promise.then(function (doc) {
-          const numPages = doc.numPages
-          // Get Text Content of all pages in the PDF
-          for (let i = 1; i <= numPages; i++) {
-            // Required to prevent that i is always the total number of pages
-            (function (pageNumber) {
-              doc.getPage(pageNumber).then(function (page) {
-                page.getTextContent().then(function (textContent) {
-                  const textItems = textContent.items
-                  let finalString = ''
-                  for (let i = 0; i < textItems.length; i++) {
-                    const item = textItems[i]
-                    finalString += item.str + ' '
-                  }
-                  fileContent.addFileContentText(pageNumber, finalString)
-                })
-              })
-            })(i)
+    const fileHandlesPromises = [...ev.dataTransfer.items]
+    // …by including only files (where file misleadingly means actual file _or_
+    // directory)…
+      .filter((item) => item.kind === 'file')
+    // …and, depending on previous feature detection…
+      .map((item) =>
+        supportsFileSystemAccessAPI
+        // …either get a modern `FileSystemHandle`…
+          ? item.getAsFileSystemHandle()
+        // …or a classic `FileSystemFileEntry`.
+          : supportsWebkitGetAsEntry ? item.webkitGetAsEntry() : item
+      )
+    // Loop over the array of promises.
+    for await (const handle of fileHandlesPromises) {
+      if (handle.kind === 'directory' || handle.isDirectory) {
+        // get all files in directory
+        // let fileHandles
+        if (handle.constructor.name === 'FileSystemDirectoryEntry') {
+          const dirReader = handle.createReader()
+          dirReader.readEntries(async (fileHandles) => {
+            if (fileHandles.length) {
+              for await (const fileHandle of fileHandles) {
+                if (fileHandle.isFile) {
+                  fileHandle.file(handleFile)
+                }
+              }
+            }
+          })
+        } else if (handle.constructor.name === 'FileSystemDirectoryHandle') {
+          for await (const fileHandle of handle.values()) {
+            if (fileHandle.kind === 'file' || fileHandle.isFile) {
+              const file = await fileHandle.getFile()
+              handleFile(file)
+            }
           }
-        })
-        // after first file
+        }
+      } else {
+        if (handle.kind === 'file' || handle.isFile) {
+          if (handle.constructor.name === 'FileSystemFileHandle') {
+            const file = await handle.getFile()
+            handleFile(file)
+          } else if (handle.constructor.name === 'FileSystemFileEntry') {
+            await handle.file(handleFile)
+          } else {
+            const file = await handle.getAsFile()
+            handleFile(file)
+          }
+        }
       }
-    })
-  } else {
-    // Use DataTransfer interface to access the file(s)
+    }
+  } else if (ev.dataTransfer.files) {
     [...ev.dataTransfer.files].forEach((file, i) => {
-      console.log(`… file[${i}].name = ${file.name}`)
+      handleFile(file)
     })
   }
+
+  function handleFile (file) {
+    if (file.type === 'application/pdf' || file.name.split('.').pop() === 'pdf') {
+      fileContent.name = file.name.split('.').slice(0, -1).join('.')
+      fileURL.value = URL.createObjectURL(file)
+      fileURLPreview.value = fileURL.value + '#view=FitH'
+      extractContent(fileContent.name)
+    }
+  }
 }
+const extractContent = (fileName) => {
+  // eslint-disable-next-line no-undef
+  const loadingTask = pdfjsLib.getDocument(fileURL.value)
+  loadingTask.promise.then(function (doc) {
+    const numPages = doc.numPages
+    // Get Text Content of all pages in the PDF
+    for (let i = 1; i <= numPages; i++) {
+      // Required to prevent that i is always the total number of pages
+      (function (pageNumber) {
+        doc.getPage(pageNumber).then((page) => {
+          page.getTextContent().then((textContent) => {
+            const textItems = textContent.items
+            let finalString = ''
+            for (let i = 0; i < textItems.length; i++) {
+              const item = textItems[i]
+              finalString += item.str + ' '
+            }
+            fileContent.addFileContentText(fileName, pageNumber, finalString)
+          })
+        })
+      })(i)
+    }
+  })
+}
+
 const handleDragOver = (ev) => {
   ev.preventDefault()
 }
@@ -67,7 +123,7 @@ const handleDragOver = (ev) => {
         <p>Drop your file here</p>
       </div>
       <div
-        v-if="fileContent.text[1]"
+        v-if="Object.keys(fileContent.text).length > 0"
         class="field"
       >
         <label
@@ -77,15 +133,13 @@ const handleDragOver = (ev) => {
         <div class="control">
           <textarea
             id="pdfTextContent"
-            v-model="fileContent.text"
             name="pdfTextContent"
             class="textarea is-family-monospace is-size-7"
             readonly
-          />
+          >{{ fileContent.text }}</textarea>
         </div>
       </div>
     </div>
-    <!-- <canvas id="the-canvas"></canvas> -->
     <embed
       v-if="fileURLPreview"
       class="column is-half"

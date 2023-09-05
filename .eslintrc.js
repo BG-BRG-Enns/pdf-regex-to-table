@@ -18,6 +18,19 @@ module.exports = {
       parserOptions: {
         sourceType: 'script'
       }
+    },
+    {
+      files: ['**/*.html'],
+      rules: {
+        'vue/comment-directive': 'off',
+        'eol-last': 'off'
+      }
+    },
+    {
+      files: ['FileReader.vue'],
+      rules: {
+        'vue/no-textarea-mustache': 'off'
+      }
     }
   ],
   parserOptions: {

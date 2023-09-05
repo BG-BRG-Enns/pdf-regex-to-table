@@ -1,7 +1,7 @@
 <script setup>
 import { regex } from '../stores/regex.js'
 regex.setRegex(
-  'Klasse: ([0-9][a-z])\\s+(.+])\\s+SBNR: (\\d+)\\s+([A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})'
+  '(.*)'
 )
 </script>
 <template>
@@ -11,13 +11,26 @@ regex.setRegex(
     <div class="select">
       <select v-model="regex.regex">
         <option
-          value="Klasse: ([0-9][a-z])\s+(.+])\s+SBNR: (\d+)\s+([A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})"
+          disabled
+          value=""
+        >
+          Please select
+        </option>
+
+        <option
+          value="(.*)"
           :selected="true"
         >
-          Klasse: ([0-9][a-z])\s+(.+])\s+SBNR:
-          (\d+)\s+([A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})
+          Whole page
         </option>
-        <option value="">
+        <option
+          value="Klasse: ([0-9][a-z])\s+(.+])\s+SBNR: (\d+)\s+([A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})"
+        >
+          E-Book-Codes
+        </option>
+        <option
+          value=""
+        >
           Other
         </option>
       </select>

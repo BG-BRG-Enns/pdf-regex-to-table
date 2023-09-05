@@ -5,12 +5,11 @@ import { ref } from 'vue'
 import { utils, writeFileXLSX } from 'xlsx'
 
 const csv = ref([])
-const filename = ref('extracted-data')
 const exportXLSX = () => {
   utils.table_to_book(document.getElementById('extracted-data'))
   writeFileXLSX(
     utils.table_to_book(document.getElementById('extracted-data')),
-    `${filename.value}.xlsx`
+    `${fileContent.name}.xlsx`
   )
 }
 const exportCSV = () => {
@@ -27,7 +26,7 @@ const exportCSV = () => {
   const encodedUri = encodeURI(csvContent)
   const link = document.createElement('a')
   link.setAttribute('href', encodedUri)
-  link.setAttribute('download', `${filename.value}.csv`)
+  link.setAttribute('download', `${fileContent.name}.csv`)
   document.body.appendChild(link) // Required for FF
   link.click()
 }
@@ -41,8 +40,6 @@ const exportCSV = () => {
     <div class="column is-narrow">
       <div class="field">
         <div class="control">
-          <!-- :href="'data:text/plain;charset=utf-8,' + encodeURIComponent(fileContent.text.join('\n'))"
-                  :download="fileContent.name" -->
           <a
             class="button is-success"
             @click="exportCSV"
@@ -53,8 +50,6 @@ const exportCSV = () => {
     <div class="column is-narrow">
       <div class="field">
         <div class="control">
-          <!-- :href="'data:text/plain;charset=utf-8,' + encodeURIComponent(fileContent.text.join('\n'))"
-                  :download="fileContent.name" -->
           <a
             class="button is-success"
             @click="exportXLSX"
@@ -71,7 +66,7 @@ const exportCSV = () => {
           <div class="field">
             <p class="control">
               <input
-                v-model="filename"
+                v-model="fileContent.name"
                 class="input is-family-monospace"
                 type="text"
                 placeholder="Filename"
@@ -88,21 +83,23 @@ const exportCSV = () => {
       class="table is-striped is-bordered is-hoverable"
     >
       <tbody>
-        <template v-for="(line, index) in fileContent.text">
-          <tr
-            v-if="line.match(regex.regex)"
-            :key="index"
-          >
-            <td>{{ index }}</td>
-            <template v-for="(match, index2) in line.match(regex.regex)">
-              <td
-                v-if="index2 > 0"
-                :key="index2"
-              >
-                {{ match }}
-              </td>
-            </template>
-          </tr>
+        <template v-for="(file, index) in fileContent.text">
+          <template v-for="(line, index2) in file">
+            <tr
+              v-if="line.match(regex.regex)"
+              :key="index2"
+            >
+              <td>{{ index }}</td><td>{{ index2 }}</td>
+              <template v-for="(match, index3) in line.match(regex.regex)">
+                <td
+                  v-if="index3 > 0"
+                  :key="index3"
+                >
+                  {{ match }}
+                </td>
+              </template>
+            </tr>
+          </template>
         </template>
       </tbody>
     </table>
