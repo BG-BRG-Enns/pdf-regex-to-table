@@ -1,0 +1,1 @@
+import{_ as s,o as t,c as o,a as e}from"./index-419f4b89.js";const c={},a={class:"box"},_=e("h2",{class:"is-size-4"}," PDF regex to table ",-1),r=e("p",null,"Copyright 2023, Christoph Stadlbauer",-1),n=[_,r];function i(d,l){return t(),o("div",a,n)}const p=s(c,[["render",i]]);export{p as default};
