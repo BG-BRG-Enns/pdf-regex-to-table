@@ -17,7 +17,7 @@ const handleDrop = async (ev) => {
   ev.preventDefault()
 
   fileContent.clearFileContentText()
-  if (ev.dataTransfer.items) {
+  if (ev.dataTransfer && ev.dataTransfer.items) {
     const fileHandlesPromises = [...ev.dataTransfer.items]
     // …by including only files (where file misleadingly means actual file _or_
     // directory)…
@@ -68,8 +68,12 @@ const handleDrop = async (ev) => {
         }
       }
     }
-  } else if (ev.dataTransfer.files) {
+  } else if (ev.dataTransfer && ev.dataTransfer.files) {
     [...ev.dataTransfer.files].forEach((file, i) => {
+      handleFile(file)
+    })
+  } else if (ev.target.files) {
+    [...ev.target.files].forEach((file, i) => {
       handleFile(file)
     })
   }
@@ -119,8 +123,16 @@ const handleDragOver = (ev) => {
         class="dropzone"
         @drop.prevent="handleDrop"
         @dragover.prevent="handleDragOver"
+        @click="$refs.fileInput.click()"
       >
         <p>Drop your file here</p>
+        <input
+          ref="fileInput"
+          type="file"
+          multiple
+          hidden
+          @change="handleDrop"
+        >
       </div>
       <div
         v-if="Object.keys(fileContent.text).length > 0"
