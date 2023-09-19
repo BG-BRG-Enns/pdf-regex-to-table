@@ -125,7 +125,13 @@ const handleDragOver = (ev) => {
         @dragover.prevent="handleDragOver"
         @click="$refs.fileInput.click()"
       >
-        <p>Drop your file here</p>
+        <p>
+          Drop your file here
+          <br>
+          <span class="is-size-6">
+            or click to choose (a) file(s)
+          </span>
+        </p>
         <input
           ref="fileInput"
           type="file"
