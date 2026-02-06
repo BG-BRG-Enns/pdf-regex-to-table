@@ -3,11 +3,18 @@
 import { ref } from 'vue'
 import { fileContent } from '../stores/fileContent'
 
-import('pdfjs-dist').then(async (pdfjs) => {
-  import('pdfjs-dist/build/pdf.worker.entry').then(async (workerSrc) => {
-    pdfjs.GlobalWorkerOptions.workerSrc = workerSrc.default
-  })
-})
+let pdfjs = null
+
+const loadPdfjs = async () => {
+  if (pdfjs) return pdfjs
+  pdfjs = await import('pdfjs-dist')
+  pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+    'pdfjs-dist/build/pdf.worker.mjs',
+    import.meta.url
+  ).href
+  return pdfjs
+}
+
 const fileURL = ref('')
 const fileURLPreview = ref('')
 const supportsFileSystemAccessAPI = 'getAsFileSystemHandle' in DataTransferItem.prototype
@@ -87,9 +94,9 @@ const handleDrop = async (ev) => {
     }
   }
 }
-const extractContent = (fileName) => {
-  // eslint-disable-next-line no-undef
-  const loadingTask = pdfjsLib.getDocument(fileURL.value)
+const extractContent = async (fileName) => {
+  const pdf = await loadPdfjs()
+  const loadingTask = pdf.getDocument(fileURL.value)
   loadingTask.promise.then(function (doc) {
     const numPages = doc.numPages
     // Get Text Content of all pages in the PDF
@@ -154,7 +161,8 @@ const handleDragOver = (ev) => {
             name="pdfTextContent"
             class="textarea is-family-monospace is-size-7"
             readonly
-          >{{ fileContent.text }}</textarea>
+            :value="JSON.stringify(fileContent.text, null, 2)"
+          />
         </div>
       </div>
     </div>

@@ -10,8 +10,8 @@
     "editor.defaultFormatter": "vscode.html-language-features"
   },
   "editor.codeActionsOnSave": {
-    "source.formatDocument": true,
-    "source.fixAll.eslint": true
+    "source.formatDocument": "explicit",
+    "source.fixAll.eslint": "explicit"
   },
   "eslint.validate": [
     "vue",

@@ -2,15 +2,18 @@
 import { fileContent } from '../stores/fileContent'
 import { regex } from '../stores/regex.js'
 import { ref } from 'vue'
-import { utils, writeFileXLSX } from 'xlsx'
+import writeXlsxFile from 'write-excel-file'
 
 const csv = ref([])
-const exportXLSX = () => {
-  utils.table_to_book(document.getElementById('extracted-data'))
-  writeFileXLSX(
-    utils.table_to_book(document.getElementById('extracted-data')),
-    `${fileContent.name}.xlsx`
+const exportXLSX = async () => {
+  const rows = document.querySelectorAll('#extracted-data tr')
+  const data = Array.from(rows).map((row) =>
+    Array.from(row.querySelectorAll('td')).map((td) => ({
+      value: td.innerText,
+      type: String
+    }))
   )
+  await writeXlsxFile(data, { fileName: `${fileContent.name}.xlsx` })
 }
 const exportCSV = () => {
   const rows = document.querySelectorAll('table tr')
