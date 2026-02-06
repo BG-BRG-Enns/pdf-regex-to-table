@@ -42,7 +42,7 @@ const menuActive = ref(false)
 
 <style scoped>
 .hero .navbar {
-  background: #83e4ff;
+  background: #bad58d;
   /* padding: 0.5rem; */
 }
 
@@ -55,6 +55,6 @@ const menuActive = ref(false)
 }
 
 .logo {
-  height: 2.2rem;
+  height: 3rem;
 }
 </style>
