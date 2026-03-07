@@ -2,7 +2,7 @@
 import { fileContent } from '../stores/fileContent'
 import { regex } from '../stores/regex.js'
 import { ref } from 'vue'
-import writeXlsxFile from 'write-excel-file'
+import writeXlsxFile from 'write-excel-file/browser'
 
 const csv = ref([])
 const exportXLSX = async () => {
