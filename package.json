@@ -5,11 +5,9 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview",
-    "predeploy": "npm run lint && npm run build && cp -a ./dist/index.html ./dist/404.html",
-    "deploy": "gh-pages -d dist",
     "lint": "npm run lint:js && npm run lint:md",
     "lint:js": "eslint . --fix",
     "lint:md": "markdownlint-cli2 --fix"
@@ -27,7 +25,6 @@
     "@vue/eslint-config-prettier": "^10.2.0",
     "eslint": "^9.39.2",
     "eslint-plugin-vue": "^10.7.0",
-    "gh-pages": "^6.3.0",
     "markdownlint-cli2": "^0.20.0",
     "pdfjs-dist": "^5.4.624",
     "prettier": "^3.8.1",
