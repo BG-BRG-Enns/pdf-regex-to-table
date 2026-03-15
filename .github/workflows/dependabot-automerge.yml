@@ -20,6 +20,7 @@ jobs:
         uses: dependabot/fetch-metadata@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          skip-commit-verification: true
 
       - name: Enable auto-merge for safe Dependabot PRs
         if: >-
