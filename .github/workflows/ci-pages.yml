@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Use Node.js 22
         uses: actions/setup-node@v6
@@ -27,7 +27,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Run lint
         run: npm run lint
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Use Node.js 22
         uses: actions/setup-node@v6
@@ -46,7 +46,12 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
+
+      - name: Security audit
+        run: |
+          npm audit --audit-level=high
+          npm audit signatures
 
       - name: Build site
         run: npm run build
@@ -78,4 +83,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
