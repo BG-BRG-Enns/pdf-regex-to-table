@@ -1,31 +1,10 @@
 import js from '@eslint/js'
 import pluginVue from 'eslint-plugin-vue'
+import globals from 'globals'
+import stylistic from '@stylistic/eslint-plugin'
 
 const jsFiles = ['**/*.{js,mjs,cjs}']
 const vueFiles = ['**/*.vue']
-
-// Common browser globals
-const browserGlobals = {
-  window: 'readonly',
-  document: 'readonly',
-  navigator: 'readonly',
-  console: 'readonly',
-  fetch: 'readonly',
-  URL: 'readonly',
-  setTimeout: 'readonly',
-  clearTimeout: 'readonly',
-  setInterval: 'readonly',
-  clearInterval: 'readonly',
-  requestAnimationFrame: 'readonly',
-  cancelAnimationFrame: 'readonly',
-  localStorage: 'readonly',
-  sessionStorage: 'readonly',
-  location: 'readonly',
-  performance: 'readonly',
-  HTMLElement: 'readonly',
-  Event: 'readonly',
-  CustomEvent: 'readonly'
-}
 
 export default [
   {
@@ -38,32 +17,17 @@ export default [
       ecmaVersion: 'latest',
       sourceType: 'module',
       globals: {
-        ...browserGlobals,
-        // Node.js globals
-        Buffer: 'readonly',
-        __dirname: 'readonly',
-        __filename: 'readonly',
-        exports: 'writable',
-        global: 'readonly',
-        module: 'writable',
-        process: 'readonly',
-        require: 'readonly',
-        setImmediate: 'readonly',
-        clearImmediate: 'readonly'
+        ...globals.browser,
+        ...globals.node
       }
-    },
-    rules: {}
+    }
   },
   // Service Worker specific config
   {
     files: ['**/sw.js', '**/service-worker.js'],
     languageOptions: {
       globals: {
-        self: 'readonly',
-        caches: 'readonly',
-        clients: 'readonly',
-        skipWaiting: 'readonly',
-        ServiceWorkerGlobalScope: 'readonly'
+        ...globals.serviceworker
       }
     },
     rules: {
@@ -80,12 +44,21 @@ export default [
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
-      globals: browserGlobals
+      globals: {
+        ...globals.browser
+      }
     },
     rules: {
-      // Relax some rules for Vue components
       'vue/multi-word-component-names': 'off',
       'vue/no-v-html': 'warn'
+    }
+  },
+  {
+    plugins: {
+      '@stylistic': stylistic
+    },
+    rules: {
+      '@stylistic/space-before-function-paren': ['error', 'always']
     }
   },
   {
