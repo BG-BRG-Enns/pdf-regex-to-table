@@ -9,8 +9,11 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "npm run lint:js && npm run lint:md",
-    "lint:js": "eslint . --fix",
-    "lint:md": "markdownlint-cli2 --fix"
+    "lint:js": "eslint .",
+    "lint:md": "markdownlint-cli2",
+    "lint:fix": "npm run lint:fix:js && npm run lint:fix:md",
+    "lint:fix:js": "eslint --fix .",
+    "lint:fix:md": "markdownlint-cli2 --fix"
   },
   "dependencies": {
     "bulma": "1.0.4",
@@ -20,16 +23,13 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@rushstack/eslint-patch": "1.16.1",
+    "@stylistic/eslint-plugin": "5.10.0",
     "@vitejs/plugin-vue": "6.0.6",
-    "@vue/eslint-config-prettier": "10.2.0",
     "eslint": "10.2.1",
     "eslint-plugin-vue": "10.9.0",
+    "globals": "17.5.0",
     "markdownlint-cli2": "0.22.1",
     "pdfjs-dist": "5.6.205",
-    "prettier": "3.8.3",
-    "prismjs": "1.30.0",
-    "vite": "8.0.10",
-    "vue-eslint-parser": "10.4.0"
+    "vite": "8.0.10"
   }
 }
