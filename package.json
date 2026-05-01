@@ -19,7 +19,7 @@
     "bulma": "1.0.4",
     "vue": "3.5.33",
     "vue-router": "5.0.6",
-    "write-excel-file": "3.0.8"
+    "write-excel-file": "4.0.4"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
