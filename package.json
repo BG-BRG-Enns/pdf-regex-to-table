@@ -24,12 +24,12 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@stylistic/eslint-plugin": "5.10.0",
-    "@vitejs/plugin-vue": "6.0.6",
-    "eslint": "10.3.0",
+    "@vitejs/plugin-vue": "6.0.7",
+    "eslint": "10.4.0",
     "eslint-plugin-vue": "10.9.1",
     "globals": "17.6.0",
     "markdownlint-cli2": "0.22.1",
     "pdfjs-dist": "5.7.284",
-    "vite": "8.0.12"
+    "vite": "8.0.13"
   }
 }
