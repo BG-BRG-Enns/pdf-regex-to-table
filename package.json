@@ -30,6 +30,6 @@
     "globals": "17.6.0",
     "markdownlint-cli2": "0.22.1",
     "pdfjs-dist": "5.7.284",
-    "vite": "8.0.13"
+    "vite": "8.0.14"
   }
 }
