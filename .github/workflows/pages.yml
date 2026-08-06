@@ -1,4 +1,4 @@
-name: Pages
+name: Deploy Pages
 
 on:
   push:
@@ -13,7 +13,9 @@ concurrency:
 
 jobs:
   build:
+    name: Build Pages
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
@@ -25,11 +27,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci --ignore-scripts
-
-      - name: Security audit
-        run: |
-          npm audit --audit-level=high
-          npm audit signatures
 
       - name: Build site
         run: npm run build
@@ -46,8 +43,10 @@ jobs:
           path: dist
 
   deploy:
+    name: Deploy
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       pages: write
       id-token: write

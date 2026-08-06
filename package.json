@@ -17,19 +17,19 @@
   },
   "dependencies": {
     "bulma": "1.0.4",
-    "vue": "3.5.34",
-    "vue-router": "5.0.6",
-    "write-excel-file": "3.0.8"
+    "vue": "3.5.40",
+    "vue-router": "5.2.0",
+    "write-excel-file": "4.1.1"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@stylistic/eslint-plugin": "5.10.0",
-    "@vitejs/plugin-vue": "6.0.7",
-    "eslint": "10.4.1",
-    "eslint-plugin-vue": "10.9.2",
-    "globals": "17.6.0",
-    "markdownlint-cli2": "0.22.1",
+    "@vitejs/plugin-vue": "6.0.8",
+    "eslint": "10.7.0",
+    "eslint-plugin-vue": "10.10.0",
+    "globals": "17.7.0",
+    "markdownlint-cli2": "0.23.1",
     "pdfjs-dist": "5.7.284",
-    "vite": "8.0.16"
+    "vite": "8.1.5"
   }
 }
